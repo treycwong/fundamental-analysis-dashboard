@@ -1,0 +1,13 @@
+# requirements.txt
+
+# Core packages
+streamlit>=1.16.0
+pandas
+plotly
+yfinance
+numpy
+requests
+beautifulsoup4
+
+# Additional UI enhancements
+streamlit-extras

@@ -101,7 +101,7 @@ page = st.sidebar.radio("Go to",
 
 # Dashboard page
 if page == "Dashboard":
-    st.header("Dashboard")
+    st.title("Dashboard")
 
     col1, col2 = st.columns(2)
 
@@ -227,7 +227,7 @@ if page == "Dashboard":
 
 # AI Analysis page
 elif page == "AI Analysis":
-    st.header("AI Analysis")
+    st.title("AI Analysis")
 
     with st.expander("Gold Market Outlook", expanded=True):
         col1, col2 = st.columns([0.7, 0.3])
@@ -390,7 +390,7 @@ elif page == "AI Analysis":
 
 # Calendar & Checklist page
 elif page == "Calendar & Checklist":
-    st.header("Calendar & Checklist")
+    st.title("Calendar & Checklist")
 
     # Store which tab is active in session state
     if 'events_tab' not in st.session_state:
@@ -667,7 +667,7 @@ elif page == "Calendar & Checklist":
 
 # Scoring System page
 elif page == "Scoring System":
-    st.header("Scoring System")
+    st.title("Scoring System")
 
     tab1, tab2 = st.tabs(["Add New Score", "View Score History"])
 
@@ -845,7 +845,7 @@ elif page == "Scoring System":
 
 # Data Analysis page
 elif page == "Data Analysis":
-    st.header("Data Analysis")
+    st.title("Data Analysis")
 
     st.info(
         "This section would typically connect to market data APIs to pull and analyze real-time data. For demonstration purposes, we're using sample visualizations.")

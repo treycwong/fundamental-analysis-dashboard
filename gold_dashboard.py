@@ -28,15 +28,19 @@ load_dotenv()
 # Setup Claude API
 try:
     import anthropic
-
     anthropic_available = True
 
     # Initialize Anthropic client if API key is available
-    if st.secrets["api_key"]["anthropic"]:
+    if "api_key" in st.secrets and "anthropic" in st.secrets["api_key"]:
         claude_client = anthropic.Anthropic(
             api_key=st.secrets["api_key"]["anthropic"]
         )
-        claude_model = st.secrets["api_key"]["anthropic_model"]
+        # Check if the model is specified in your secrets
+        if "anthropic_model" in st.secrets["api_key"]:
+            claude_model = st.secrets["api_key"]["anthropic_model"]
+        else:
+            # Fall back to a default model if none specified
+            claude_model = "claude-3-opus-20240229"
         claude_available = True
     else:
         claude_client = None

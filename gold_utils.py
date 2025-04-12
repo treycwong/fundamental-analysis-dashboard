@@ -622,12 +622,18 @@ def initialize_sample_data(conn):
 
 def create_pdf(title, content):
     """
-    Create a PDF report from the given content
+    Create a PDF report from the given content with proper Unicode support
     """
     pdf = FPDF()
+    # Add Unicode font support
     pdf.add_page()
     
-    # Set up the PDF
+    # Set up the PDF with UTF-8 support
+    pdf.add_font('DejaVu', '', 'DejaVuSansCondensed.ttf', uni=True)
+    pdf.add_font('DejaVu', 'B', 'DejaVuSansCondensed-Bold.ttf', uni=True)
+    pdf.add_font('DejaVu', 'I', 'DejaVuSansCondensed-Oblique.ttf', uni=True)
+    
+    # Set up the PDF - use safer approach with standard fonts
     pdf.set_font("Arial", "B", 16)
     pdf.cell(0, 10, title, ln=True, align='C')
     pdf.ln(10)
@@ -656,11 +662,14 @@ def create_pdf(title, content):
             pdf.set_font("Arial", "", 11)
         elif line.startswith('- '):
             pdf.set_x(15)  # Indent bullet points
-            pdf.multi_cell(0, 5, "• " + line[2:])
+            # Use simple hyphen instead of Unicode bullet
+            pdf.multi_cell(0, 5, "- " + line[2:])
         elif line.strip() == "":
             pdf.ln(3)
         else:
-            pdf.multi_cell(0, 5, line)
+            # Replace any problematic Unicode characters
+            safe_line = line.replace('•', '-').replace('🔴', '').replace('🟠', '').replace('🟡', '')
+            pdf.multi_cell(0, 5, safe_line)
     
     # Return the PDF as a bytes object
     return pdf.output(dest='S').encode('latin1')

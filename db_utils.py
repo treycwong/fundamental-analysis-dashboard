@@ -216,7 +216,7 @@ def save_claude_analysis(conn, analysis_type, data):
 def get_latest_claude_analysis(conn, analysis_type):
     """Get the latest Claude analysis from the database"""
     if conn is None:
-        return None
+        return None, None
     
     try:
         c = conn.cursor()

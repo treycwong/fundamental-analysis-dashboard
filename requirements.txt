@@ -9,6 +9,7 @@ numpy
 requests
 beautifulsoup4
 python_dotenv
+anthropic
 
 # Additional UI enhancements
 streamlit-extras

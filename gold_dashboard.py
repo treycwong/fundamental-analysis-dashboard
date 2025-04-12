@@ -53,7 +53,7 @@ except ImportError:
     claude_available = False
 
 # Set page config
-st.set_page_config(page_title="Gold Fundamental Analysis Dashboard",
+st.set_page_config(page_title="Gold Fundamental Analysis",
                    layout="wide")
 
 # Initialize database

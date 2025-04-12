@@ -89,7 +89,7 @@ else:
     initialize_sample_data(conn)
 
 # App title
-st.title("Gold Fundamental Analysis Dashboard")
+st.title("Gold Fundamental Analysis")
 
 # Sidebar for navigation
 st.sidebar.title("Navigation")

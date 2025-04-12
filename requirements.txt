@@ -8,6 +8,7 @@ yfinance
 numpy
 requests
 beautifulsoup4
+sqlite3
 
 # Additional UI enhancements
 streamlit-extras

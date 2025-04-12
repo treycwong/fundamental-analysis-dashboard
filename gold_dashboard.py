@@ -64,7 +64,10 @@ else:
     events = get_events(conn)
     # Initialize high_impact_events with events that have impact level 3
     high_impact_events = [e for e in events if e[4] == 3]  # Assuming impact is at index 4
-
+    
+    # Add this line here to initialize sample data if needed
+    initialize_sample_data(conn)
+    
 # App title
 st.title("Gold Fundamental Analysis Dashboard")
 

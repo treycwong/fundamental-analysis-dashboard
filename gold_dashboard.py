@@ -14,7 +14,7 @@ import json
 # Import utility modules
 from gold_utils import (
     get_gold_price, get_dxy, get_economic_calendar,
-    get_claude_analysis, get_timeframe_analysis
+    get_claude_analysis, get_timeframe_analysis, initialize_sample_data
 )
 from db_utils import (
     init_db, save_event, update_event, delete_event,
@@ -67,7 +67,7 @@ else:
     
     # Add this line here to initialize sample data if needed
     initialize_sample_data(conn)
-    
+
 # App title
 st.title("Gold Fundamental Analysis Dashboard")
 

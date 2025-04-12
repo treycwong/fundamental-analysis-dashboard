@@ -54,6 +54,16 @@ def init_db():
             )
         ''')
 
+        c.execute('''
+            CREATE TABLE IF NOT EXISTS claude_analyses (
+                id INTEGER PRIMARY KEY,
+                date TEXT,
+                analysis_type TEXT,
+                data TEXT,
+                created_at TEXT
+            )
+        ''')
+
         conn.commit()
         return conn
     except Exception as e:
@@ -167,3 +177,61 @@ def get_scores(conn):
     except Exception as e:
         st.error(f"Error getting scores: {str(e)}")
         return []
+    
+def save_claude_analysis(conn, analysis_type, data):
+    """Save Claude's analysis to the database"""
+    if conn is None:
+        return False
+    
+    try:
+        today = datetime.now().strftime("%Y-%m-%d")
+        now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        c = conn.cursor()
+        
+        # First check if an analysis exists for today
+        c.execute('SELECT id FROM claude_analyses WHERE date = ? AND analysis_type = ?', 
+                 (today, analysis_type))
+        existing = c.fetchone()
+        
+        if existing:
+            # Update existing analysis
+            c.execute('''
+                UPDATE claude_analyses 
+                SET data = ?, created_at = ?
+                WHERE id = ?
+            ''', (json.dumps(data), now, existing[0]))
+        else:
+            # Insert new analysis
+            c.execute('''
+                INSERT INTO claude_analyses (date, analysis_type, data, created_at)
+                VALUES (?, ?, ?, ?)
+            ''', (today, analysis_type, json.dumps(data), now))
+        
+        conn.commit()
+        return True
+    except Exception as e:
+        st.error(f"Error saving Claude analysis: {str(e)}")
+        return False
+
+def get_latest_claude_analysis(conn, analysis_type):
+    """Get the latest Claude analysis from the database"""
+    if conn is None:
+        return None
+    
+    try:
+        c = conn.cursor()
+        c.execute('''
+            SELECT data, created_at FROM claude_analyses 
+            WHERE analysis_type = ?
+            ORDER BY date DESC, created_at DESC LIMIT 1
+        ''', (analysis_type,))
+        result = c.fetchone()
+        
+        if result:
+            data = json.loads(result[0])
+            created_at = result[1]
+            return data, created_at
+        return None, None
+    except Exception as e:
+        st.error(f"Error retrieving Claude analysis: {str(e)}")
+        return None, None

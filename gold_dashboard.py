@@ -18,7 +18,7 @@ from gold_utils import (
 )
 from db_utils import (
     init_db, save_event, update_event, delete_event,
-    get_events, save_score, get_scores
+    get_events, save_score, get_scores, save_claude_analysis, get_latest_claude_analysis
 )
 
 # Load environment variables from .env file
@@ -209,15 +209,28 @@ if page == "Dashboard":
 elif page == "AI Analysis":
     st.header("Claude AI Market Analysis")
 
-    # This code snippet shows how to update the section where you display Claude's analysis
-
     with st.expander("Gold Market Outlook", expanded=True):
         col1, col2 = st.columns([0.7, 0.3])
+        
+        # Add a refresh button at the top
+        refresh = st.button("Refresh Analysis")
+        
+        # Get saved analysis or generate new one if refresh is clicked
+        analysis_type = "market_outlook"
+        saved_analysis, created_at = get_latest_claude_analysis(conn, analysis_type)
+        
+        if refresh or saved_analysis is None:
+            # Get Claude's independent analysis (fresh analysis)
+            claude_analysis = get_claude_analysis(conn, claude_client, claude_model, claude_available)
+            
+            # Save the analysis to the database
+            save_claude_analysis(conn, analysis_type, claude_analysis)
+        else:
+            # Use the saved analysis
+            claude_analysis = saved_analysis
+            st.info(f"Analysis last updated: {created_at}")
 
         with col1:
-            # Get Claude's independent analysis
-            claude_analysis = get_claude_analysis(conn, claude_client, claude_model, claude_available)
-
             # Display the analysis
             outlook = claude_analysis["outlook"]
             outlook_color = "#3D9970" if outlook == "Bullish" else "#FF4136" if outlook == "Bearish" else "#FFDC00"
@@ -273,16 +286,36 @@ elif page == "AI Analysis":
     # Add a timeframe selection for more specific analysis
     st.subheader("Time-Based Analysis")
     timeframe = st.radio("Select Timeframe for Analysis",
-                         ["Weekly Outlook", "Monthly Projection",
-                          "Quarterly Forecast"], horizontal=True)
+                        ["Weekly Outlook", "Monthly Projection",
+                        "Quarterly Forecast"], horizontal=True)
 
-    if st.button("Generate Analysis"):
+    # Refresh button for timeframe analysis
+    refresh_timeframe = st.button("Generate Analysis", key="refresh_timeframe")
+
+    # Check if we have a saved analysis for this timeframe
+    analysis_type = f"timeframe_{timeframe.lower().replace(' ', '_')}"
+    saved_timeframe, timeframe_created_at = get_latest_claude_analysis(conn, analysis_type)
+
+    if refresh_timeframe or saved_timeframe is None:
         with st.spinner(f"Analyzing {timeframe.lower()} trends..."):
             # Get Claude's independent timeframe analysis
             timeframe_analysis = get_timeframe_analysis(conn, timeframe, claude_client, claude_model, claude_available)
-
+            
+            # Save as JSON data
+            timeframe_data = {"analysis": timeframe_analysis}
+            save_claude_analysis(conn, analysis_type, timeframe_data)
+            
             # Display the analysis
             st.markdown(timeframe_analysis)
+            
+            if not refresh_timeframe:
+                st.success("Analysis generated successfully! Next time, it will be loaded from cache unless you click 'Generate Analysis'.")
+    else:
+        # Show when the analysis was created
+        st.info(f"Analysis last updated: {timeframe_created_at}")
+        
+        # Display the saved analysis
+        st.markdown(saved_timeframe["analysis"])
 
 
 # Calendar & Checklist page

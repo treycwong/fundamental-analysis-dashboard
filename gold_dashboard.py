@@ -214,58 +214,15 @@ if page == "Dashboard":
 elif page == "AI Analysis":
     st.header("Claude AI Market Analysis")
 
+    # This code snippet shows how to update the section where you display Claude's analysis
+
     with st.expander("Gold Market Outlook", expanded=True):
         col1, col2 = st.columns([0.7, 0.3])
-        
-        # Add this at the beginning of the AI Analysis page section
-        if 'last_refresh_time' not in st.session_state:
-            st.session_state.last_refresh_time = None
-
-        # Add a refresh button at the top with timestamp
-        if st.button("Refresh Analysis"):
-            st.session_state.last_refresh_time = datetime.now()
-            
-        # Get saved analysis or generate new one if refresh is clicked
-        analysis_type = "market_outlook"
-        saved_analysis, created_at = get_latest_claude_analysis(conn, analysis_type)
-
-        # Check if refresh was just clicked or if we need a new analysis
-        need_new_analysis = (
-            st.session_state.last_refresh_time is not None and 
-            (created_at is None or 
-            (datetime.strptime(created_at, "%Y-%m-%d %H:%M:%S") < st.session_state.last_refresh_time))
-        )
-
-        if need_new_analysis or saved_analysis is None:
-            # Get Claude's independent analysis (fresh analysis)
-            claude_analysis = get_claude_analysis(conn, claude_client, claude_model, claude_available)
-            
-            # Save the analysis to the database
-            save_claude_analysis(conn, analysis_type, claude_analysis)
-            
-            # Reset the refresh time after using it
-            st.session_state.last_refresh_time = None
-        else:
-            # Use the saved analysis
-            claude_analysis = saved_analysis
-            st.info(f"Analysis last updated: {created_at}")
-
-        # Get saved analysis or generate new one if refresh is clicked
-        analysis_type = "market_outlook"
-        saved_analysis, created_at = get_latest_claude_analysis(conn, analysis_type)
-
-        if refresh or saved_analysis is None:
-            # Get Claude's independent analysis (fresh analysis)
-            claude_analysis = get_claude_analysis(conn, claude_client, claude_model, claude_available)
-            
-            # Save the analysis to the database
-            save_claude_analysis(conn, analysis_type, claude_analysis)
-        else:
-            # Use the saved analysis
-            claude_analysis = saved_analysis
-            st.info(f"Analysis last updated: {created_at}")
 
         with col1:
+            # Get Claude's independent analysis
+            claude_analysis = get_claude_analysis(conn, claude_client, claude_model, claude_available)
+
             # Display the analysis
             outlook = claude_analysis["outlook"]
             outlook_color = "#3D9970" if outlook == "Bullish" else "#FF4136" if outlook == "Bearish" else "#FFDC00"

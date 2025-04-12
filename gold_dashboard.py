@@ -328,7 +328,7 @@ elif page == "AI Analysis":
                         "Quarterly Forecast"], horizontal=True)
 
     # Refresh button for timeframe analysis
-    #refresh_timeframe = st.button("Generate Analysis", key="refresh_timeframe_analysis")
+    refresh_timeframe = st.button("Generate Analysis", key="refresh_timeframe_analysis")
     #if refresh_timeframe:
     #    st.write("Generating new timeframe analysis...")
     

@@ -10,8 +10,7 @@ requests
 beautifulsoup4
 python_dotenv
 anthropic
-fpdf
-base64
+fpdf==1.7.2
 
 # Additional UI enhancements
 streamlit-extras

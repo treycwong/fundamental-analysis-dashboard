@@ -1,63 +1,0 @@
-SQLite format 3   @     2                                                               2 ._
-   
-� �
-�                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               �9�MtablescoresscoresCREATE TABLE scores (
-            id INTEGER PRIMARY KEY,
-            date TEXT,
-            interest_rates REAL,
-            inflation REAL,
-            dollar_strength REAL,
-            supply REAL,
-            demand REAL,
-            positioning REAL,
-            notes TEXT
-        )��_tableeventseventsCREATE TABLE events (
-            id INTEGER PRIMARY KEY,
-            date TEXT,
-            title TEXT,
-            category TEXT,
-            impact INTEGER,
-            notes TEXT,
-            completed INTEGER DEFAULT 0
-        )
-� 
-z
-z�k6
-��],
-�
-�
-�
-d
-3
-��m<��r?                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                = !?#	2025-04-12China Gold Reserve UpdateDemandhigh demandQ !EE2025-04-19Gold ETF Flows Weekly UpdateDemandGold ETF inflows are rising.1 !?	
-2025-05-10China Gold Reserve UpdateDemand1 !?	
-2025-05-10China Gold Reserve UpdateDemand/ !9
-2025-05-09India Gold Import DataDemand3 !1)
-2025-05-05ECB Policy MeetingInterest Rates1 !?	
-2025-05-04China Gold Reserve UpdateDemand/ !9
-2025-05-04Gold Production ReportSupply/ !3
-2025-05-04US CPI Data ReleaseInflation1 !?	
-2025-05-03China Gold Reserve UpdateDemand/ !3
-2025-05-03US CPI Data ReleaseInflation/ !9
-2025-05-02Gold Production ReportSupply/ !3
-2025-05-02US CPI Data ReleaseInflation/ !9
-2025-05-02Gold Production ReportSupply/
- !3
-2025-04-30US PPI Data ReleaseInflation/ !9
-2025-04-30India Gold Import DataDemand1 !?	
-2025-04-30China Gold Reserve UpdateDemand1
- !?	
-2025-04-28China Gold Reserve UpdateDemand/	 !3
-2025-04-22US CPI Data ReleaseInflation? !O#
-2025-04-21CFTC Commitment of Traders ReportPositioning/ !9
-2025-04-19Gold Production ReportSupply� 4!?
-2025-04-12China Gold Reserve UpdateDemandnd/ !3
-2025-04-17US CPI Data ReleaseInflation3 !1)
-2025-04-17ECB Policy MeetingInterest Rates/ !3
-2025-04-17US PPI Data ReleaseInflation   !9
-2025-04-12Gold PrG !9=2025-04-12Gold Production ReportSupplyProduction is increasing
-   � ��                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
- !
-2025-04-12		
- !
-2025-04-12

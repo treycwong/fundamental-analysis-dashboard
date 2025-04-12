@@ -33,10 +33,9 @@ try:
     # Initialize Anthropic client if API key is available
     if os.environ.get("ANTHROPIC_API_KEY"):
         claude_client = anthropic.Anthropic(
-            api_key=os.environ.get("ANTHROPIC_API_KEY")
+            api_key=st.secrets["api_keys"]["anthropic"]
         )
-        claude_model = os.environ.get("ANTHROPIC_MODEL",
-                                      "claude-3-7-sonnet-20250219")
+        claude_model = st.secrets["api_keys"]["anthropic_model"]
         claude_available = True
     else:
         claude_client = None

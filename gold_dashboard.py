@@ -329,8 +329,8 @@ elif page == "AI Analysis":
 
     # Refresh button for timeframe analysis
     refresh_timeframe = st.button("Generate Analysis", key="refresh_timeframe_analysis")
-    #if refresh_timeframe:
-    #    st.write("Generating new timeframe analysis...")
+    if refresh_timeframe:
+        st.write("Generating new timeframe analysis...")
     
     # For the timeframe analysis section
     if 'last_timeframe_refresh_time' not in st.session_state:

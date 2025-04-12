@@ -1256,7 +1256,7 @@ elif page == "Data Analysis":
 
 # Settings page
 elif page == "Settings":
-    st.header("Settings")
+    st.title("Settings")
 
     st.subheader("Data Sources")
 
@@ -1325,7 +1325,7 @@ elif page == "Settings":
 
 # Usage Guide page
 elif page == "Usage Guide":
-    st.header("Usage Guide")
+    st.title("Usage Guide")
 
     st.subheader("Quick Tips")
 

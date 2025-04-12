@@ -685,7 +685,33 @@ def create_pdf(title, content):
         return pdf.output(dest='S').encode('latin1')
 
 def get_pdf_download_link(pdf_bytes, filename):
-    """Generate a download link for the PDF"""
+    """Generate a download button for the PDF"""
     b64 = base64.b64encode(pdf_bytes).decode()
-    href = f'<a href="data:application/pdf;base64,{b64}" download="{filename}">Download PDF Report</a>'
-    return href
+    href = f'data:application/pdf;base64,{b64}'
+    
+    # Create a styled button using HTML/CSS
+    button_style = """
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        background-color: #4CAF50;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        border: none;
+        text-align: center;
+        cursor: pointer;
+        font-weight: bold;
+        margin-top: 1rem;
+        transition: background-color 0.3s;
+    """
+    
+    # Create the button element with hover effect
+    download_button = f"""
+    <a href="{href}" download="{filename}" style="{button_style}" 
+        onmouseover="this.style.backgroundColor='#45a049'" 
+        onmouseout="this.style.backgroundColor='#4CAF50'">
+        📥 Download PDF Report
+    </a>
+    """
+    
+    return download_button

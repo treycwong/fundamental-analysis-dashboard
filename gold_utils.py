@@ -4,6 +4,7 @@ import numpy as np
 from datetime import datetime, timedelta
 import json
 import yfinance as yf
+import streamlit as st
 
 
 def get_gold_price():
@@ -545,3 +546,51 @@ def generate_fallback_timeframe_analysis(timeframe, period_name,
     analysis += "\n\n> **Disclaimer:** This analysis is based on current market conditions and upcoming events. It should be used as one input among many in your trading decisions. Always conduct your own research and risk assessment."
 
     return analysis
+
+
+
+def initialize_sample_data(conn):
+    """Populate the database with sample data if it's empty."""
+    if conn is None:
+        return
+    
+    try:
+        # Check if events table is empty
+        c = conn.cursor()
+        c.execute("SELECT COUNT(*) FROM events")
+        event_count = c.fetchone()[0]
+        
+        if event_count == 0:
+            # Add sample events
+            sample_events = [
+                ('2025-04-15', 'Fed Interest Rate Decision', 'Interest Rates', 3, 'Expected to keep rates unchanged', 0),
+                ('2025-04-18', 'US CPI Data Release', 'Inflation', 2, 'Expected to show moderation in inflation', 0),
+                ('2025-04-20', 'Gold ETF Flows Weekly Update', 'Demand', 1, 'Monitor for investment demand trends', 0),
+                ('2025-04-25', 'US Dollar Index Report', 'Currency', 2, 'Watch for dollar strength/weakness', 0),
+                ('2025-05-01', 'Mining Output Data', 'Supply', 2, 'Check production trends', 0),
+            ]
+            
+            for event in sample_events:
+                save_event(conn, *event)
+                
+        # Check if scores table is empty
+        c.execute("SELECT COUNT(*) FROM scores")
+        score_count = c.fetchone()[0]
+        
+        if score_count == 0:
+            # Add a sample score analysis
+            today = datetime.now().strftime('%Y-%m-%d')
+            save_score(
+                conn,
+                today,
+                interest_rates=6,
+                inflation=7,
+                dollar_strength=5,
+                supply=6,
+                demand=7,
+                positioning=5,
+                notes="Initial fundamental analysis. Rising inflation and steady demand appear bullish for gold."
+            )
+            
+    except Exception as e:
+        st.error(f"Error initializing sample data: {str(e)}")

@@ -54,6 +54,17 @@ st.set_page_config(page_title="Gold Fundamental Analysis Dashboard",
 # Initialize database
 conn = init_db()
 
+# Check if database connection was successful
+if conn is None:
+    st.error("Failed to connect to the database. Some features may not work properly.")
+    # Initialize an empty placeholder for high_impact_events to prevent errors
+    high_impact_events = []
+else:
+    # Get events and initialize high_impact_events
+    events = get_events(conn)
+    # Initialize high_impact_events with events that have impact level 3
+    high_impact_events = [e for e in events if e[4] == 3]  # Assuming impact is at index 4
+
 # App title
 st.title("Gold Fundamental Analysis Dashboard")
 

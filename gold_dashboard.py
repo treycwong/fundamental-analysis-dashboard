@@ -217,8 +217,10 @@ elif page == "AI Analysis":
     with st.expander("Gold Market Outlook", expanded=True):
         col1, col2 = st.columns([0.7, 0.3])
         
-        # Add a refresh button at the top
-        refresh = st.button("Refresh Analysis")
+        refresh = st.button("Refresh Analysis", key="refresh_main_analysis")
+        if refresh:
+            st.write("Getting fresh analysis...")
+            
         
         # Get saved analysis or generate new one if refresh is clicked
         analysis_type = "market_outlook"
@@ -295,7 +297,9 @@ elif page == "AI Analysis":
                         "Quarterly Forecast"], horizontal=True)
 
     # Refresh button for timeframe analysis
-    refresh_timeframe = st.button("Generate Analysis", key="refresh_timeframe")
+    refresh_timeframe = st.button("Generate Analysis", key="refresh_timeframe_analysis")
+    if refresh_timeframe:
+        st.write("Generating new timeframe analysis...")
 
     # Check if we have a saved analysis for this timeframe
     analysis_type = f"timeframe_{timeframe.lower().replace(' ', '_')}"

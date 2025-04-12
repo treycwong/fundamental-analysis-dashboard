@@ -1434,20 +1434,20 @@ elif page == "Usage Guide":
     """)
 
 # Add a footer
-if page != "Usage Guide":  # Only show the mini usage guide if not on the full guide page
-    st.markdown("""
-    ---
-    ### Usage Guide
-
-    **Quick Tips:**
-    1. Start with the **Dashboard** for an overview of current market conditions and upcoming events
-    2. Use the **Calendar & Checklist** to track important economic releases and gold-specific events
-    3. Record your fundamental analysis in the **Scoring System** to track your market sentiment over time
-    4. Dive deeper with the **Data Analysis** tools to understand correlations and patterns
-
-    *For more detailed instructions, visit the Usage Guide page in the navigation sidebar.*
-    """)
-else:
-    # Just add a simple footer on the Usage Guide page
-    st.markdown("---")
-    st.markdown("*Dashboard created for fundamental gold trading analysis*")
+#if page != "Usage Guide":  # Only show the mini usage guide if not on the full guide page
+#    st.markdown("""
+#    ---
+#    ### Usage Guide
+#
+#    **Quick Tips:**
+#    1. Start with the **Dashboard** for an overview of current market conditions and upcoming events
+#    2. Use the **Calendar & Checklist** to track important economic releases and gold-specific events
+#    3. Record your fundamental analysis in the **Scoring System** to track your market sentiment over time
+#    4. Dive deeper with the **Data Analysis** tools to understand correlations and patterns
+#
+#    *For more detailed instructions, visit the Usage Guide page in the navigation sidebar.*
+#    """)
+#else:
+#    # Just add a simple footer on the Usage Guide page
+#    st.markdown("---")
+#    st.markdown("*Dashboard created for fundamental gold trading analysis*")

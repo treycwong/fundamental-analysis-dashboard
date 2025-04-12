@@ -314,71 +314,63 @@ elif page == "AI Analysis":
 
     # Add a timeframe selection for more specific analysis
     st.subheader("Time-Based Analysis")
+
+    # Keep track of last selected timeframe
+    if 'last_selected_timeframe' not in st.session_state:
+        st.session_state.last_selected_timeframe = None
+
+    # Timeframe radio button
     timeframe = st.radio("Select Timeframe for Analysis",
-                        ["Weekly Outlook", "Monthly Projection",
-                        "Quarterly Forecast"], horizontal=True)
+                        ["Weekly Outlook", "Monthly Projection", "Quarterly Forecast"],
+                        horizontal=True)
 
-    # Refresh button for timeframe analysis
-    refresh_timeframe = st.button("Generate Analysis", key="refresh_timeframe_analysis")
-    if refresh_timeframe:
-        st.write("Generating new timeframe analysis...")
-    
-    # For the timeframe analysis section
-    if 'last_timeframe_refresh_time' not in st.session_state:
-        st.session_state.last_timeframe_refresh_time = None
-
-    # Refresh button for timeframe analysis
-    if st.button("Generate Analysis", key="refresh_timeframe"):
+    # Check if we need to regenerate analysis based on a new selection
+    timeframe_changed = timeframe != st.session_state.last_selected_timeframe
+    if timeframe_changed:
+        st.session_state.last_selected_timeframe = timeframe
         st.session_state.last_timeframe_refresh_time = datetime.now()
 
-    # Check if we have a saved analysis for this timeframe
+    # Initialize session state if not already set
+    if 'last_timeframe_refresh_time' not in st.session_state:
+        st.session_state.last_timeframe_refresh_time = datetime.now()
+
+    # Define the analysis type key
     analysis_type = f"timeframe_{timeframe.lower().replace(' ', '_')}"
+
+    # Fetch latest saved analysis
     saved_timeframe, timeframe_created_at = get_latest_claude_analysis(conn, analysis_type)
 
-    # Check if refresh was just clicked or if we need a new analysis
+    # Decide whether to generate a new one
     need_new_timeframe = (
         st.session_state.last_timeframe_refresh_time is not None and 
         (timeframe_created_at is None or 
-        (datetime.strptime(timeframe_created_at, "%Y-%m-%d %H:%M:%S") < st.session_state.last_timeframe_refresh_time))
+        datetime.strptime(timeframe_created_at, "%Y-%m-%d %H:%M:%S") < st.session_state.last_timeframe_refresh_time)
     )
 
+    # Run or retrieve analysis
     if need_new_timeframe or saved_timeframe is None:
         with st.spinner(f"Analyzing {timeframe.lower()} trends..."):
-            # Get Claude's independent timeframe analysis
             timeframe_analysis = get_timeframe_analysis(conn, timeframe, claude_client, claude_model, claude_available)
-            
-            # Save as JSON data
             timeframe_data = {"analysis": timeframe_analysis}
             save_claude_analysis(conn, analysis_type, timeframe_data)
-            
-            # Display the analysis
             st.markdown(timeframe_analysis)
-            
-            if not refresh_timeframe:
-                st.success("Analysis generated successfully! Next time, it will be loaded from cache unless you click 'Generate Analysis'.")
+            st.success("Analysis generated successfully!")
     else:
-        # Show when the analysis was created
         st.info(f"Analysis last updated: {timeframe_created_at}")
-        
-        # Display the saved analysis
         st.markdown(saved_timeframe["analysis"])
 
-    # After displaying the timeframe analysis
-    if saved_timeframe is not None or refresh_timeframe:
-        # Generate PDF
-        try:
-            pdf_title = f"Gold Market {timeframe} - Analysis Report"
-            analysis_content = saved_timeframe["analysis"] if not refresh_timeframe else timeframe_analysis
-            pdf_bytes = create_pdf(pdf_title, analysis_content)
-            
-            # Create download link
-            st.markdown(
-                get_pdf_download_link(pdf_bytes, f"gold_market_{timeframe.lower().replace(' ', '_')}.pdf"), 
-                unsafe_allow_html=True
-            )
-        except Exception as e:
-            st.error(f"Error generating PDF: {str(e)}")
+    # PDF Generation
+    try:
+        pdf_title = f"Gold Market {timeframe} - Analysis Report"
+        analysis_content = timeframe_analysis if need_new_timeframe else saved_timeframe["analysis"]
+        pdf_bytes = create_pdf(pdf_title, analysis_content)
 
+        st.markdown(
+            get_pdf_download_link(pdf_bytes, f"gold_market_{timeframe.lower().replace(' ', '_')}.pdf"),
+            unsafe_allow_html=True
+        )
+    except Exception as e:
+        st.error(f"Error generating PDF: {str(e)}")
 
 
 # Calendar & Checklist page

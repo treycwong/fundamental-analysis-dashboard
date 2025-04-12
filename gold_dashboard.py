@@ -59,14 +59,13 @@ st.set_page_config(page_title="Gold Fundamental Analysis",
 # Custom CSS to reduce sidebar width
 st.markdown("""
     <style>
-        /* Narrow down the sidebar */
         section[data-testid="stSidebar"] {
             width: 180px !important;
         }
 
-        /* Also adjust main content area accordingly */
         div.block-container {
-            padding-left: 200px; /* or less if too much space */
+            padding-left: 2rem !important;
+            padding-right: 2rem !important;
         }
     </style>
 """, unsafe_allow_html=True)

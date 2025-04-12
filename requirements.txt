@@ -8,7 +8,6 @@ yfinance
 numpy
 requests
 beautifulsoup4
-sqlite3
 python_dotenv
 
 # Additional UI enhancements

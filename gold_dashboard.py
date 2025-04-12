@@ -31,11 +31,11 @@ try:
     anthropic_available = True
 
     # Initialize Anthropic client if API key is available
-    if os.environ.get("ANTHROPIC_API_KEY"):
+    if st.secrets["api_key"]["anthropic"]:
         claude_client = anthropic.Anthropic(
-            api_key=st.secrets["api_keys"]["anthropic"]
+            api_key=st.secrets["api_key"]["anthropic"]
         )
-        claude_model = st.secrets["api_keys"]["anthropic_model"]
+        claude_model = st.secrets["api_key"]["anthropic_model"]
         claude_available = True
     else:
         claude_client = None

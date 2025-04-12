@@ -5,14 +5,13 @@ import os
 import streamlit as st
 
 
-
 # Cache the database connection
-@st.cache_resource
+@st.cache_resource(ttl="1h")
 def get_connection():
     """Create a database connection that can be reused across reruns."""
     try:
         db_path = "/tmp/gold_analysis.db"
-        conn = sqlite3.connect(db_path)
+        conn = sqlite3.connect(db_path, check_same_thread=False)  # Important: allow usage from different threads
         return conn
     except Exception as e:
         st.error(f"Failed to connect to database: {str(e)}")

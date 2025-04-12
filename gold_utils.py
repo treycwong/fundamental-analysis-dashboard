@@ -1,4 +1,5 @@
 # gold_utils.py
+from db_utils import save_event, save_score
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
@@ -103,16 +104,35 @@ def get_claude_analysis(conn, claude_client=None, claude_model=None,
     """
     Get Claude's independent analysis of the gold market without relying on user scores.
     """
+
+    if conn is None:
+        st.error("Database connection not available for analysis")
+        return {
+            "outlook": "Neutral",
+            "confidence": 50,
+            "analysis": "Unable to access database for analysis.",
+            "key_factors": ["Database connection error"],
+            "factor_scores": {
+                "Interest Rates": 5, "Inflation": 5, "Dollar Strength": 5,
+                "Supply": 5, "Demand": 5, "Market Positioning": 5
+            }
+        }
+
     # Get current date for context
     today = datetime.now().strftime("%Y-%m-%d")
 
-    # Get upcoming events for context
-    c = conn.cursor()
-    next_week = (datetime.now() + timedelta(days=7)).strftime("%Y-%m-%d")
-    c.execute(
-        'SELECT * FROM events WHERE date BETWEEN ? AND ? ORDER BY date, impact DESC',
-        (today, next_week))
-    upcoming_events = c.fetchall()
+    # Get upcoming events for context - wrap this in try/except
+    try:
+        c = conn.cursor()
+        next_week = (datetime.now() + timedelta(days=7)).strftime("%Y-%m-%d")
+        c.execute(
+            'SELECT * FROM events WHERE date BETWEEN ? AND ? ORDER BY date, impact DESC',
+            (today, next_week))
+        upcoming_events = c.fetchall()
+    except Exception as e:
+        st.error(f"Error retrieving events: {str(e)}")
+        upcoming_events = []
+
 
     # Get gold price data
     gold_data = get_gold_price()
@@ -552,6 +572,7 @@ def generate_fallback_timeframe_analysis(timeframe, period_name,
 def initialize_sample_data(conn):
     """Populate the database with sample data if it's empty."""
     if conn is None:
+        st.error("Database connection not available")
         return
     
     try:
@@ -571,7 +592,8 @@ def initialize_sample_data(conn):
             ]
             
             for event in sample_events:
-                save_event(conn, *event)
+                # Make sure to pass conn as the first argument to save_event
+                save_event(conn, event[0], event[1], event[2], event[3], event[4], event[5])
                 
         # Check if scores table is empty
         c.execute("SELECT COUNT(*) FROM scores")

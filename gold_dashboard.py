@@ -402,14 +402,15 @@ elif page == "Calendar & Checklist":
                             if checked != (row['completed'] == 1):
                                 # Update completion status
                                 update_event(
-                                    row['id'],
-                                    row['date'].strftime('%Y-%m-%d'),
-                                    row['title'],
-                                    row['category'],
-                                    row['impact'],
-                                    row['notes'],
-                                    1 if checked else 0
-                                )
+                                conn,             # Database connection
+                                row['id'],        # Event ID
+                                row['date'].strftime('%Y-%m-%d'),  # Date
+                                row['title'],     # Title
+                                row['category'],  # Category
+                                row['impact'],    # Impact
+                                row['notes'],     # Notes
+                                1 if checked else 0  # Completed status
+                            )
 
                         with col2:
                             title_style = "text-decoration: line-through;" if \

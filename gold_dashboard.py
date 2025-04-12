@@ -5,6 +5,9 @@ import plotly.express as px
 from datetime import datetime, timedelta
 import numpy as np
 import time  # Added for AI analysis simulation
+from fpdf import FPDF
+import base64
+import io
 from streamlit_extras.stylable_container import stylable_container
 from streamlit_extras.switch_page_button import switch_page
 import os
@@ -14,7 +17,8 @@ import json
 # Import utility modules
 from gold_utils import (
     get_gold_price, get_dxy, get_economic_calendar,
-    get_claude_analysis, get_timeframe_analysis, initialize_sample_data
+    get_claude_analysis, get_timeframe_analysis, initialize_sample_data,
+    create_pdf, get_pdf_download_link
 )
 from db_utils import (
     init_db, save_event, update_event, delete_event,
@@ -316,6 +320,22 @@ elif page == "AI Analysis":
         
         # Display the saved analysis
         st.markdown(saved_timeframe["analysis"])
+        
+    # After displaying the timeframe analysis
+    if saved_timeframe is not None or refresh_timeframe:
+        # Generate PDF
+        try:
+            pdf_title = f"Gold Market {timeframe} - Analysis Report"
+            analysis_content = saved_timeframe["analysis"] if not refresh_timeframe else timeframe_analysis
+            pdf_bytes = create_pdf(pdf_title, analysis_content)
+            
+            # Create download link
+            st.markdown(
+                get_pdf_download_link(pdf_bytes, f"gold_market_{timeframe.lower().replace(' ', '_')}.pdf"), 
+                unsafe_allow_html=True
+            )
+        except Exception as e:
+            st.error(f"Error generating PDF: {str(e)}")
 
 
 # Calendar & Checklist page

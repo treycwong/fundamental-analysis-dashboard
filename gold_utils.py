@@ -616,3 +616,54 @@ def initialize_sample_data(conn):
             
     except Exception as e:
         st.error(f"Error initializing sample data: {str(e)}")
+
+def create_pdf(title, content):
+    """
+    Create a PDF report from the given content
+    """
+    pdf = FPDF()
+    pdf.add_page()
+    
+    # Set up the PDF
+    pdf.set_font("Arial", "B", 16)
+    pdf.cell(0, 10, title, ln=True, align='C')
+    pdf.ln(10)
+    
+    # Date and header
+    pdf.set_font("Arial", "I", 10)
+    pdf.cell(0, 5, f"Generated on: {datetime.now().strftime('%Y-%m-%d %H:%M')}", ln=True)
+    pdf.ln(5)
+    
+    # Convert markdown content to simple text
+    pdf.set_font("Arial", "", 11)
+    
+    # Split content by lines and add to PDF
+    content_lines = content.split('\n')
+    for line in content_lines:
+        # Basic markdown handling
+        if line.startswith('## '):
+            pdf.set_font("Arial", "B", 14)
+            pdf.ln(5)
+            pdf.cell(0, 10, line[3:], ln=True)
+            pdf.set_font("Arial", "", 11)
+        elif line.startswith('### '):
+            pdf.set_font("Arial", "B", 12)
+            pdf.ln(3)
+            pdf.cell(0, 7, line[4:], ln=True)
+            pdf.set_font("Arial", "", 11)
+        elif line.startswith('- '):
+            pdf.set_x(15)  # Indent bullet points
+            pdf.multi_cell(0, 5, "• " + line[2:])
+        elif line.strip() == "":
+            pdf.ln(3)
+        else:
+            pdf.multi_cell(0, 5, line)
+    
+    # Return the PDF as a bytes object
+    return pdf.output(dest='S').encode('latin1')
+
+def get_pdf_download_link(pdf_bytes, filename):
+    """Generate a download link for the PDF"""
+    b64 = base64.b64encode(pdf_bytes).decode()
+    href = f'<a href="data:application/pdf;base64,{b64}" download="{filename}">Download PDF Report</a>'
+    return href

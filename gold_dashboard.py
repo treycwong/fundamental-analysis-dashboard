@@ -216,9 +216,6 @@ elif page == "AI Analysis":
 
     with st.expander("Gold Market Outlook", expanded=True):
         col1, col2 = st.columns([0.7, 0.3])
-
-        if 'last_refresh_time' not in st.session_state:
-            st.session_state.last_refresh_time = None
         
         # Add this at the beginning of the AI Analysis page section
         if 'last_refresh_time' not in st.session_state:
@@ -353,18 +350,6 @@ elif page == "AI Analysis":
 
     if need_new_timeframe or saved_timeframe is None:
         with st.spinner(f"Analyzing {timeframe.lower()} trends..."):
-            # Generate new timeframe analysis
-            # ...rest of your code...
-            
-        # Reset the refresh time after using it
-        st.session_state.last_timeframe_refresh_time = None
-
-    # Check if we have a saved analysis for this timeframe
-    analysis_type = f"timeframe_{timeframe.lower().replace(' ', '_')}"
-    saved_timeframe, timeframe_created_at = get_latest_claude_analysis(conn, analysis_type)
-
-    if refresh_timeframe or saved_timeframe is None:
-        with st.spinner(f"Analyzing {timeframe.lower()} trends..."):
             # Get Claude's independent timeframe analysis
             timeframe_analysis = get_timeframe_analysis(conn, timeframe, claude_client, claude_model, claude_available)
             
@@ -400,6 +385,8 @@ elif page == "AI Analysis":
         except Exception as e:
             st.error(f"Error generating PDF: {str(e)}")
 
+# Reset the refresh time after using it
+    st.session_state.last_timeframe_refresh_time = None
 
 
 # Calendar & Checklist page

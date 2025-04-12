@@ -56,6 +56,22 @@ except ImportError:
 st.set_page_config(page_title="Gold Fundamental Analysis",
                    layout="wide")
 
+# Custom CSS to reduce sidebar width
+st.markdown("""
+    <style>
+        /* Narrow down the sidebar */
+        section[data-testid="stSidebar"] {
+            width: 180px !important;
+        }
+
+        /* Also adjust main content area accordingly */
+        div.block-container {
+            padding-left: 200px; /* or less if too much space */
+        }
+    </style>
+""", unsafe_allow_html=True)
+
+
 # Initialize database
 conn = init_db()
 

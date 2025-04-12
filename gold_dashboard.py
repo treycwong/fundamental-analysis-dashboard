@@ -216,16 +216,47 @@ elif page == "AI Analysis":
 
     with st.expander("Gold Market Outlook", expanded=True):
         col1, col2 = st.columns([0.7, 0.3])
+
+        if 'last_refresh_time' not in st.session_state:
+            st.session_state.last_refresh_time = None
         
-        refresh = st.button("Refresh Analysis", key="refresh_main_analysis")
-        if refresh:
-            st.write("Getting fresh analysis...")
+        # Add this at the beginning of the AI Analysis page section
+        if 'last_refresh_time' not in st.session_state:
+            st.session_state.last_refresh_time = None
+
+        # Add a refresh button at the top with timestamp
+        if st.button("Refresh Analysis"):
+            st.session_state.last_refresh_time = datetime.now()
             
-        
         # Get saved analysis or generate new one if refresh is clicked
         analysis_type = "market_outlook"
         saved_analysis, created_at = get_latest_claude_analysis(conn, analysis_type)
-        
+
+        # Check if refresh was just clicked or if we need a new analysis
+        need_new_analysis = (
+            st.session_state.last_refresh_time is not None and 
+            (created_at is None or 
+            (datetime.strptime(created_at, "%Y-%m-%d %H:%M:%S") < st.session_state.last_refresh_time))
+        )
+
+        if need_new_analysis or saved_analysis is None:
+            # Get Claude's independent analysis (fresh analysis)
+            claude_analysis = get_claude_analysis(conn, claude_client, claude_model, claude_available)
+            
+            # Save the analysis to the database
+            save_claude_analysis(conn, analysis_type, claude_analysis)
+            
+            # Reset the refresh time after using it
+            st.session_state.last_refresh_time = None
+        else:
+            # Use the saved analysis
+            claude_analysis = saved_analysis
+            st.info(f"Analysis last updated: {created_at}")
+
+        # Get saved analysis or generate new one if refresh is clicked
+        analysis_type = "market_outlook"
+        saved_analysis, created_at = get_latest_claude_analysis(conn, analysis_type)
+
         if refresh or saved_analysis is None:
             # Get Claude's independent analysis (fresh analysis)
             claude_analysis = get_claude_analysis(conn, claude_client, claude_model, claude_available)
@@ -300,6 +331,33 @@ elif page == "AI Analysis":
     refresh_timeframe = st.button("Generate Analysis", key="refresh_timeframe_analysis")
     if refresh_timeframe:
         st.write("Generating new timeframe analysis...")
+    
+    # For the timeframe analysis section
+    if 'last_timeframe_refresh_time' not in st.session_state:
+        st.session_state.last_timeframe_refresh_time = None
+
+    # Refresh button for timeframe analysis
+    if st.button("Generate Analysis", key="refresh_timeframe"):
+        st.session_state.last_timeframe_refresh_time = datetime.now()
+
+    # Check if we have a saved analysis for this timeframe
+    analysis_type = f"timeframe_{timeframe.lower().replace(' ', '_')}"
+    saved_timeframe, timeframe_created_at = get_latest_claude_analysis(conn, analysis_type)
+
+    # Check if refresh was just clicked or if we need a new analysis
+    need_new_timeframe = (
+        st.session_state.last_timeframe_refresh_time is not None and 
+        (timeframe_created_at is None or 
+        (datetime.strptime(timeframe_created_at, "%Y-%m-%d %H:%M:%S") < st.session_state.last_timeframe_refresh_time))
+    )
+
+    if need_new_timeframe or saved_timeframe is None:
+        with st.spinner(f"Analyzing {timeframe.lower()} trends..."):
+            # Generate new timeframe analysis
+            # ...rest of your code...
+            
+        # Reset the refresh time after using it
+        st.session_state.last_timeframe_refresh_time = None
 
     # Check if we have a saved analysis for this timeframe
     analysis_type = f"timeframe_{timeframe.lower().replace(' ', '_')}"

@@ -1,5 +1,8 @@
 # gold_utils.py
 from db_utils import save_event, save_score
+from fpdf import FPDF
+import base64
+import io
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta

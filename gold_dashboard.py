@@ -5,9 +5,6 @@ import plotly.express as px
 from datetime import datetime, timedelta
 import numpy as np
 import time  # Added for AI analysis simulation
-from fpdf import FPDF
-import base64
-import io
 from streamlit_extras.stylable_container import stylable_container
 from streamlit_extras.switch_page_button import switch_page
 import os
@@ -320,7 +317,7 @@ elif page == "AI Analysis":
         
         # Display the saved analysis
         st.markdown(saved_timeframe["analysis"])
-        
+
     # After displaying the timeframe analysis
     if saved_timeframe is not None or refresh_timeframe:
         # Generate PDF

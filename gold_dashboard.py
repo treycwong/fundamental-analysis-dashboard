@@ -257,16 +257,7 @@ elif page == "AI Analysis":
         analysis_type = "market_outlook"
         saved_analysis, created_at = get_latest_claude_analysis(conn, analysis_type)
 
-        if refresh or saved_analysis is None:
-            # Get Claude's independent analysis (fresh analysis)
-            claude_analysis = get_claude_analysis(conn, claude_client, claude_model, claude_available)
-            
-            # Save the analysis to the database
-            save_claude_analysis(conn, analysis_type, claude_analysis)
-        else:
-            # Use the saved analysis
-            claude_analysis = saved_analysis
-            st.info(f"Analysis last updated: {created_at}")
+        
 
         with col1:
             # Display the analysis

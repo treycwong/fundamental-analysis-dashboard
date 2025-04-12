@@ -89,7 +89,7 @@ else:
     initialize_sample_data(conn)
 
 # App title
-st.title("Gold Fundamental Analysis")
+#st.title("Gold Fundamental Analysis")
 
 # Sidebar for navigation
 st.sidebar.title("Navigation")
@@ -101,7 +101,7 @@ page = st.sidebar.radio("Go to",
 
 # Dashboard page
 if page == "Dashboard":
-    st.header("Economic Overview")
+    st.header("Dashboard")
 
     col1, col2 = st.columns(2)
 
@@ -227,7 +227,7 @@ if page == "Dashboard":
 
 # AI Analysis page
 elif page == "AI Analysis":
-    st.header("Claude AI Market Analysis")
+    st.header("AI Analysis")
 
     with st.expander("Gold Market Outlook", expanded=True):
         col1, col2 = st.columns([0.7, 0.3])
@@ -667,7 +667,7 @@ elif page == "Calendar & Checklist":
 
 # Scoring System page
 elif page == "Scoring System":
-    st.header("Fundamental Scoring System")
+    st.header("Scoring System")
 
     tab1, tab2 = st.tabs(["Add New Score", "View Score History"])
 
@@ -845,7 +845,7 @@ elif page == "Scoring System":
 
 # Data Analysis page
 elif page == "Data Analysis":
-    st.header("Gold Market Data Analysis")
+    st.header("Data Analysis")
 
     st.info(
         "This section would typically connect to market data APIs to pull and analyze real-time data. For demonstration purposes, we're using sample visualizations.")
@@ -1256,7 +1256,7 @@ elif page == "Data Analysis":
 
 # Settings page
 elif page == "Settings":
-    st.header("Dashboard Settings")
+    st.header("Settings")
 
     st.subheader("Data Sources")
 

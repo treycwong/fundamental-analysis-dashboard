@@ -622,18 +622,12 @@ def initialize_sample_data(conn):
 
 def create_pdf(title, content):
     """
-    Create a PDF report from the given content with proper Unicode support
+    Create a PDF report from the given content with simple ASCII character handling
     """
     pdf = FPDF()
-    # Add Unicode font support
     pdf.add_page()
     
-    # Set up the PDF with UTF-8 support
-    pdf.add_font('DejaVu', '', 'DejaVuSansCondensed.ttf', uni=True)
-    pdf.add_font('DejaVu', 'B', 'DejaVuSansCondensed-Bold.ttf', uni=True)
-    pdf.add_font('DejaVu', 'I', 'DejaVuSansCondensed-Oblique.ttf', uni=True)
-    
-    # Set up the PDF - use safer approach with standard fonts
+    # Set up the PDF with standard fonts
     pdf.set_font("Arial", "B", 16)
     pdf.cell(0, 10, title, ln=True, align='C')
     pdf.ln(10)
@@ -645,6 +639,12 @@ def create_pdf(title, content):
     
     # Convert markdown content to simple text
     pdf.set_font("Arial", "", 11)
+    
+    # Replace any problematic Unicode characters in the entire content first
+    content = content.replace('•', '-')
+    content = content.replace('🔴', '[High] ')
+    content = content.replace('🟠', '[Medium] ')
+    content = content.replace('🟡', '[Low] ')
     
     # Split content by lines and add to PDF
     content_lines = content.split('\n')
@@ -662,17 +662,27 @@ def create_pdf(title, content):
             pdf.set_font("Arial", "", 11)
         elif line.startswith('- '):
             pdf.set_x(15)  # Indent bullet points
-            # Use simple hyphen instead of Unicode bullet
             pdf.multi_cell(0, 5, "- " + line[2:])
         elif line.strip() == "":
             pdf.ln(3)
         else:
-            # Replace any problematic Unicode characters
-            safe_line = line.replace('•', '-').replace('🔴', '').replace('🟠', '').replace('🟡', '')
+            # Handle any potential encoding issues by replacing problematic characters
+            safe_line = ''.join(c if ord(c) < 128 else '-' for c in line)
             pdf.multi_cell(0, 5, safe_line)
     
     # Return the PDF as a bytes object
-    return pdf.output(dest='S').encode('latin1')
+    try:
+        return pdf.output(dest='S').encode('latin1')
+    except UnicodeEncodeError:
+        # If there's still an encoding error, use this last resort approach
+        pdf = FPDF()
+        pdf.add_page()
+        pdf.set_font("Arial", "B", 16)
+        pdf.cell(0, 10, "Gold Market Analysis Report", ln=True, align='C')
+        pdf.ln(10)
+        pdf.set_font("Arial", "", 12)
+        pdf.multi_cell(0, 5, "The report contains special characters that cannot be encoded. Please view the analysis in the application interface.")
+        return pdf.output(dest='S').encode('latin1')
 
 def get_pdf_download_link(pdf_bytes, filename):
     """Generate a download link for the PDF"""
